@@ -3,7 +3,7 @@ import {randomInt} from 'node:crypto'
 import { Request, Response } from "express"
 import bcrypt from 'bcryptjs';
 
-export const LoginUser = async (req: Request, res: Response) => {
+export const LoginUser = async (req: Request, res: Response): Promise<any> => {
   try {
     const { email, password } = req.body;
     
@@ -26,7 +26,7 @@ export const LoginUser = async (req: Request, res: Response) => {
   }
 }
 
-export const CreateUser = async (req: Request, res: Response) => {
+export const CreateUser = async (req: Request, res: Response): Promise<any> => {
   try {
     const { name, email, password } = req.body;
     
@@ -58,7 +58,7 @@ export const CreateUser = async (req: Request, res: Response) => {
   }
 }
 
-export const IndexUser = async (req: Request, res: Response) => {
+export const IndexUser = async (req: Request, res: Response): Promise<any> => {
   try {
     
   } catch (error) {
@@ -69,7 +69,7 @@ export const IndexUser = async (req: Request, res: Response) => {
   }
 }
 
-export const ShowUser = async (req: Request, res: Response) => {
+export const ShowUser = async (req: Request, res: Response): Promise<any> => {
   try {
     
   } catch (error) {
@@ -80,7 +80,7 @@ export const ShowUser = async (req: Request, res: Response) => {
   }
 }
 
-export const UpdateUser = async (req: Request, res: Response) => {
+export const UpdateUser = async (req: Request, res: Response): Promise<any> => {
   try {
     
   } catch (error) {
@@ -91,7 +91,7 @@ export const UpdateUser = async (req: Request, res: Response) => {
   }
 }
 
-export const DeleteUser = async (req: Request, res: Response) => {
+export const DeleteUser = async (req: Request, res: Response): Promise<any> => {
   try {
     
   } catch (error) {

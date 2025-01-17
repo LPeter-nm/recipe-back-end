@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { prisma } from '../connections/prisma';
 
-export const StoreRecipe = async (req: Request, res: Response) =>{
+export const CreateRecipe = async (req: Request, res: Response): Promise<any> =>{
   try {
     const {title, description, 
       ingredients, preparation_time, 
@@ -29,7 +29,7 @@ export const StoreRecipe = async (req: Request, res: Response) =>{
   }
 }
 
-export const IndexRecipe = async (req: Request, res: Response) =>{
+export const IndexRecipe = async (req: Request, res: Response): Promise<any> =>{
   try {
     const recipe = await prisma.recipe.findMany({
       select:{
@@ -55,7 +55,7 @@ export const IndexRecipe = async (req: Request, res: Response) =>{
   }
 }
 
-export const ShowRecipe = async (req: Request, res: Response) =>{
+export const ShowRecipe = async (req: Request, res: Response): Promise<any> =>{
   try {
     const {id} = req.params
     const recipe = await prisma.recipe.findFirst({
@@ -73,7 +73,7 @@ export const ShowRecipe = async (req: Request, res: Response) =>{
   }
 }
 
-export const UpdateRecipe = async (req: Request, res: Response) =>{
+export const UpdateRecipe = async (req: Request, res: Response): Promise<any> =>{
   try {
     const {title, description, 
       ingredients, preparation_time, 
@@ -104,7 +104,7 @@ export const UpdateRecipe = async (req: Request, res: Response) =>{
   }
 }
 
-export const DeleteRecipe = async (req: Request, res: Response) =>{
+export const DeleteRecipe = async (req: Request, res: Response): Promise<any> =>{
   try {
     const {id} = req.params;
 
