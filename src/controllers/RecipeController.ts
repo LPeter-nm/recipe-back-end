@@ -6,7 +6,7 @@ export const CreateRecipe = async (req: Request, res: Response): Promise<any> =>
     const {title, description, 
       ingredients, preparation_time, 
       difficulty, category, imagem_url, userId} = req.body
-    
+      
       const recipe = await prisma.recipe.create({
         data:{
           title, 
@@ -60,7 +60,7 @@ export const ShowRecipe = async (req: Request, res: Response): Promise<any> =>{
     const {id} = req.params
     const recipe = await prisma.recipe.findFirst({
       where:{
-        id: String(id)
+        id: id
       }
     })
 
@@ -82,7 +82,7 @@ export const UpdateRecipe = async (req: Request, res: Response): Promise<any> =>
 
     const recipe = await prisma.recipe.update({
       where:{
-        id: String(id)
+        id: id
       },
       data:{
         title, 
@@ -110,7 +110,7 @@ export const DeleteRecipe = async (req: Request, res: Response): Promise<any> =>
 
     await prisma.recipe.delete({
       where:{
-        id: String(id)
+        id: id
       }
     });
 
