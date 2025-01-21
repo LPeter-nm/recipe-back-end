@@ -26,8 +26,9 @@ export const LoginUser = async (req: Request, res: Response): Promise<any> => {
   }
 }
 
-export const CreateUser = async (req: Request, res: Response): Promise<any> => {
+export const CreateUser = async (req: Request, res: Response): Promise<Response> => {
   try {
+    console.log(req.body)
     const { name, email, password } = req.body;
   
     const emailCheck = await prisma.user.findUnique({ where: { email } });
@@ -133,7 +134,16 @@ export const UpdateUser = async (req: Request, res: Response): Promise<any> => {
 
 export const DeleteUser = async (req: Request, res: Response): Promise<any> => {
   try {
-    
+    const {id} = req.params
+
+    const userCheck = await prisma.user.findUnique({where: {id}})
+    if(!userCheck) {
+      return res.status(404).json({ error: "Usuário não encontrado"})
+    }
+
+    await prisma.user.delete({where: {id}})
+
+    return res.status(200).json({message: "Usuário deletado com sucesso"})
   } catch (error) {
     return res.status(400).json({
       error: "Erro ao deletar usuário", 
