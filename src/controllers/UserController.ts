@@ -2,12 +2,15 @@ import {prisma} from "../connections/prisma"
 import {randomInt} from 'node:crypto'
 import { Request, Response } from "express"
 import bcrypt from 'bcryptjs';
+import jwt from "jsonwebtoken";
 
 export const LoginUser = async (req: Request, res: Response): Promise<any> => {
   try {
     const { email, password } = req.body;
     
     const user = await prisma.user.findUnique({ where: { email } });
+    const SECRET_KEY = "1e186e342272db5cdcd4ead6e1e05d55896de5ca0790a9720df5b7c6fca91c07"
+
 
     if(!user) return res.status(401).json({ message: "Autenticação falhou, usuário não encontrado "})
 
@@ -17,6 +20,17 @@ export const LoginUser = async (req: Request, res: Response): Promise<any> => {
         message: 'Senha incorreta',
       });
     }
+
+    const token = jwt.sign(
+      {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+      },
+      SECRET_KEY
+    );
+
+    return res.json({token: token});
 
   } catch (error) {
     return res.status(401).json({
