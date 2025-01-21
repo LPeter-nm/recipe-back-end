@@ -4,6 +4,7 @@ import { UserRoute } from './routes/RouteUser'
 const app = express()
 const port = 3000
 
+app.use(express.json())
 app.use(UserRoute)
 app.use(RecipeRoute)
 
