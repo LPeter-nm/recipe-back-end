@@ -29,25 +29,21 @@ export const LoginUser = async (req: Request, res: Response): Promise<any> => {
 export const CreateUser = async (req: Request, res: Response): Promise<any> => {
   try {
     const { name, email, password } = req.body;
-    
-
+  
     const emailCheck = await prisma.user.findUnique({ where: { email } });
     if(emailCheck) {
       return res.status(400).json({ message: "Email já cadastrado"})
     } else {
       const randomSalt = randomInt(10, 16);
-      bcrypt.hash(password, randomSalt).then(async (hash) => {
-        const user = await prisma.user.create({
-          data: {
-            name,
-            email,
-            password: hash,
-          },
-        });
-      })
-        return res.status(201).json({ message: "Usuário criado com sucesso"})
-      
-      
+      const hash = await bcrypt.hash(password, randomSalt)
+      const user = await prisma.user.create({
+        data: {
+          name,
+          email,
+          password: hash,
+        },
+      });
+      return res.status(201).json({ message: "Usuário criado com sucesso"}) 
     }
 
   } catch (error) {
@@ -60,6 +56,16 @@ export const CreateUser = async (req: Request, res: Response): Promise<any> => {
 
 export const IndexUser = async (req: Request, res: Response): Promise<any> => {
   try {
+    const users = await prisma.user.findMany({
+      select:{
+        id: true,
+        email: true,
+        name: true,
+        recipe: true,
+      }
+    })
+
+    return res.status(200).json(users)
     
   } catch (error) {
     return res.status(400).json({
@@ -71,6 +77,14 @@ export const IndexUser = async (req: Request, res: Response): Promise<any> => {
 
 export const ShowUser = async (req: Request, res: Response): Promise<any> => {
   try {
+    const {id} = req.params;
+    const user = await prisma.user.findUnique({
+      where:{
+        id,
+      }
+    });
+
+    return res.status(200).json(user);
     
   } catch (error) {
     return res.status(400).json({
@@ -82,7 +96,33 @@ export const ShowUser = async (req: Request, res: Response): Promise<any> => {
 
 export const UpdateUser = async (req: Request, res: Response): Promise<any> => {
   try {
+    const {id} = req.params;
+    const { name, email, password } = req.body;
+
+    const emailCheck = await prisma.user.findFirst({
+      where:{
+        email,
+      }
+    });
     
+    if(emailCheck) {
+      return res.status(400).json({ message: "Email já cadastrado"})
+    }
+    
+    const randomSalt = randomInt(10, 16);
+    const hash = await bcrypt.hash(password, randomSalt)
+    await prisma.user.update({
+      where:{
+        id,
+      },
+      data:{
+        name,
+        email,
+        password: hash,
+      }
+    })
+
+    return res.status(200).json({message: "Usuário atualizado!"})
   } catch (error) {
     return res.status(400).json({
       error: "Erro ao Atualizar usuário", 
