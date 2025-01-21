@@ -26,7 +26,7 @@ export const LoginUser = async (req: Request, res: Response): Promise<any> => {
   }
 }
 
-export const CreateUser = async (req: Request, res: Response): Promise<Response> => {
+export const CreateUser = async (req: Request, res: Response): Promise<any> => {
   try {
     console.log(req.body)
     const { name, email, password } = req.body;
