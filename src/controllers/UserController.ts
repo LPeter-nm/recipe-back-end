@@ -26,8 +26,9 @@ export const LoginUser = async (req: Request, res: Response): Promise<any> => {
   }
 }
 
-export const CreateUser = async (req: Request, res: Response): Promise<any> => {
+export const CreateUser = async (req: Request, res: Response): Promise<Response> => {
   try {
+    console.log(req.body)
     const { name, email, password } = req.body;
   
     const emailCheck = await prisma.user.findUnique({ where: { email } });
