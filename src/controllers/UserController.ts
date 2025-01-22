@@ -9,7 +9,6 @@ export const LoginUser = async (req: Request, res: Response): Promise<any> => {
     const { email, password } = req.body;
     
     const user = await prisma.user.findUnique({ where: { email } });
-    const SECRET_KEY = "1e186e342272db5cdcd4ead6e1e05d55896de5ca0790a9720df5b7c6fca91c07"
 
 
     if(!user) return res.status(401).json({ message: "Autenticação falhou, usuário não encontrado "})
@@ -27,7 +26,7 @@ export const LoginUser = async (req: Request, res: Response): Promise<any> => {
         name: user.name,
         email: user.email,
       },
-      SECRET_KEY
+      process.env.SECRET_KEY
     );
 
     return res.json({token: token});
@@ -42,7 +41,6 @@ export const LoginUser = async (req: Request, res: Response): Promise<any> => {
 
 export const CreateUser = async (req: Request, res: Response): Promise<any> => {
   try {
-    console.log(req.body)
     const { name, email, password } = req.body;
   
     const emailCheck = await prisma.user.findUnique({ where: { email } });
