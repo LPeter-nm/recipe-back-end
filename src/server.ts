@@ -2,7 +2,7 @@ import express from 'express'
 import { RecipeRoute } from './routes/RouteRecipe'
 import { UserRoute } from './routes/RouteUser'
 const app = express()
-const port = 3000
+const port = 4000
 
 app.use(express.json())
 app.use(UserRoute)
