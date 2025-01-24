@@ -1,11 +1,22 @@
 import { Request, Response } from 'express';
 import { prisma } from '../connections/prisma';
+import { JwtPayload } from 'jsonwebtoken';
 
-export const CreateRecipe = async (req: Request, res: Response): Promise<any> =>{
+type User = {
+  id: string;
+  name: string;
+  email: string;
+}
+
+type RequestWithUser = Request &{
+  user: string | JwtPayload | User;
+}
+export const CreateRecipe = async (req: Request, res: Response): Promise<any> => {
   try {
     const {title, description, 
       ingredients, preparation_time, 
-      difficulty, category, imagem_url, userId} = req.body
+      difficulty, category, imagem_url} = req.body
+    const { id } = req.user;
       
       const recipe = await prisma.recipe.create({
         data:{
@@ -16,7 +27,7 @@ export const CreateRecipe = async (req: Request, res: Response): Promise<any> =>
           difficulty, 
           category, 
           imagem_url, 
-          userId
+          userId: id
         }
       });
 
@@ -31,7 +42,12 @@ export const CreateRecipe = async (req: Request, res: Response): Promise<any> =>
 
 export const IndexRecipe = async (req: Request, res: Response): Promise<any> =>{
   try {
+    const {id} = req.user;
+
     const recipe = await prisma.recipe.findMany({
+      where:{
+        userId: id,
+      },
       select:{
         id: true,
         title: true, 
@@ -54,6 +70,7 @@ export const IndexRecipe = async (req: Request, res: Response): Promise<any> =>{
     })
   }
 }
+
 
 export const ShowRecipe = async (req: Request, res: Response): Promise<any> =>{
   try {
@@ -104,6 +121,38 @@ export const UpdateRecipe = async (req: Request, res: Response): Promise<any> =>
   }
 }
 
+export const updateFavorite = async (req: Request, res: Response): Promise<any> =>{
+ try {
+  const {id} = req.params
+  const recipeCheck = await prisma.recipe.findUnique({where: {id}})
+  if(!recipeCheck) return res.status(404).json({ error: 'Receita não encontrada'})
+
+  const oldFavorite = await prisma.recipe.findUnique({
+    where: {id},
+    select: {favorite: true}
+  })
+
+  let newStatus;
+  if(oldFavorite?.favorite === false){
+    newStatus = true
+  } else {
+    newStatus = false
+  }
+
+  const updateFavorite = await prisma.recipe.update({
+    where: {id},
+    data: {favorite: newStatus}
+  })
+
+  return res.status(200).json(updateFavorite)
+ } catch(error){
+  return res.status(400).json({
+    message: 'Erro ao atualizar receita',
+    error: error  
+  })
+ }
+
+}
 export const DeleteRecipe = async (req: Request, res: Response): Promise<any> =>{
   try {
     const {id} = req.params;

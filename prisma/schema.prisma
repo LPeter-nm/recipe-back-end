@@ -32,6 +32,7 @@ model Recipe {
   title            String
   description      String
   ingredients      String
+  favorite         Boolean    @default(false)
   preparation_time Int        @map("preparationTime")
   difficulty       Difficulty @default(FACIL)
   category         String

@@ -90,7 +90,7 @@ export const IndexUser = async (req: Request, res: Response): Promise<any> => {
 
 export const ShowUser = async (req: Request, res: Response): Promise<any> => {
   try {
-    const {id} = req.params;
+    const {id} = req.user;
     const user = await prisma.user.findUnique({
       where:{
         id,
