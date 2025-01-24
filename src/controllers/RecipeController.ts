@@ -11,12 +11,12 @@ type User = {
 type RequestWithUser = Request &{
   user: string | JwtPayload | User;
 }
-export const CreateRecipe = async (req: Request, res: Response): Promise<any> => {
+export const CreateRecipe = async (req: RequestWithUser, res: Response): Promise<any> => {
   try {
     const {title, description, 
       ingredients, preparation_time, 
       difficulty, category, imagem_url} = req.body
-    const { id } = req.user;
+    const { id } = req.user as User;
       
       const recipe = await prisma.recipe.create({
         data:{
@@ -40,9 +40,9 @@ export const CreateRecipe = async (req: Request, res: Response): Promise<any> =>
   }
 }
 
-export const IndexRecipe = async (req: Request, res: Response): Promise<any> =>{
+export const IndexRecipe = async (req: RequestWithUser, res: Response): Promise<any> =>{
   try {
-    const {id} = req.user;
+    const {id} = req.user as User;
 
     const recipe = await prisma.recipe.findMany({
       where:{
@@ -72,7 +72,7 @@ export const IndexRecipe = async (req: Request, res: Response): Promise<any> =>{
 }
 
 
-export const ShowRecipe = async (req: Request, res: Response): Promise<any> =>{
+export const ShowRecipe = async (req: RequestWithUser, res: Response): Promise<any> =>{
   try {
     const {id} = req.params
     const recipe = await prisma.recipe.findFirst({
@@ -90,7 +90,7 @@ export const ShowRecipe = async (req: Request, res: Response): Promise<any> =>{
   }
 }
 
-export const UpdateRecipe = async (req: Request, res: Response): Promise<any> =>{
+export const UpdateRecipe = async (req: RequestWithUser, res: Response): Promise<any> =>{
   try {
     const {title, description, 
       ingredients, preparation_time, 
@@ -121,7 +121,7 @@ export const UpdateRecipe = async (req: Request, res: Response): Promise<any> =>
   }
 }
 
-export const updateFavorite = async (req: Request, res: Response): Promise<any> =>{
+export const updateFavorite = async (req: RequestWithUser, res: Response): Promise<any> =>{
  try {
   const {id} = req.params
   const recipeCheck = await prisma.recipe.findUnique({where: {id}})
@@ -153,7 +153,7 @@ export const updateFavorite = async (req: Request, res: Response): Promise<any> 
  }
 
 }
-export const DeleteRecipe = async (req: Request, res: Response): Promise<any> =>{
+export const DeleteRecipe = async (req: RequestWithUser, res: Response): Promise<any> =>{
   try {
     const {id} = req.params;
 

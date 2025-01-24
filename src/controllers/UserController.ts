@@ -2,9 +2,19 @@ import {prisma} from "../connections/prisma"
 import {randomInt} from 'node:crypto'
 import { Request, Response } from "express"
 import bcrypt from 'bcryptjs';
-import jwt from "jsonwebtoken";
+import jwt, { JwtPayload } from "jsonwebtoken";
 
-export const LoginUser = async (req: Request, res: Response): Promise<any> => {
+type User = {
+  id: string;
+  name: string;
+  email: string;
+}
+
+type RequestWithUser = Request &{
+  user: string | JwtPayload | User;
+}
+
+export const LoginUser = async (req: RequestWithUser, res: Response): Promise<any> => {
   try {
     const { email, password } = req.body;
     
@@ -37,7 +47,7 @@ export const LoginUser = async (req: Request, res: Response): Promise<any> => {
   }
 }
 
-export const CreateUser = async (req: Request, res: Response): Promise<any> => {
+export const CreateUser = async (req: RequestWithUser, res: Response): Promise<any> => {
   try {
     const { name, email, password } = req.body;
   
@@ -65,7 +75,7 @@ export const CreateUser = async (req: Request, res: Response): Promise<any> => {
   }
 }
 
-export const IndexUser = async (req: Request, res: Response): Promise<any> => {
+export const IndexUser = async (req: RequestWithUser, res: Response): Promise<any> => {
   try {
     const users = await prisma.user.findMany({
       select:{
@@ -86,9 +96,9 @@ export const IndexUser = async (req: Request, res: Response): Promise<any> => {
   }
 }
 
-export const ShowUser = async (req: Request, res: Response): Promise<any> => {
+export const ShowUser = async (req: RequestWithUser, res: Response): Promise<any> => {
   try {
-    const {id} = req.user;
+    const {id} = req.user as User;
     const user = await prisma.user.findUnique({
       where:{
         id,
@@ -105,9 +115,9 @@ export const ShowUser = async (req: Request, res: Response): Promise<any> => {
   }
 }
 
-export const UpdateUser = async (req: Request, res: Response): Promise<any> => {
+export const UpdateUser = async (req: RequestWithUser, res: Response): Promise<any> => {
   try {
-    const {id} = req.params;
+    const { id } = req.user as User;
     const { name, email, password } = req.body;
 
     const emailCheck = await prisma.user.findFirst({
@@ -142,9 +152,9 @@ export const UpdateUser = async (req: Request, res: Response): Promise<any> => {
   }
 }
 
-export const DeleteUser = async (req: Request, res: Response): Promise<any> => {
+export const DeleteUser = async (req: RequestWithUser, res: Response): Promise<any> => {
   try {
-    const {id} = req.user
+    const { id } = req.user as User;
 
     const userCheck = await prisma.user.findUnique({where: {id}})
     if(!userCheck) {

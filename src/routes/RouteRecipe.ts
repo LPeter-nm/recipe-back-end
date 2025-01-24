@@ -9,6 +9,5 @@ routes.get('/recipes', authMiddleware,IndexRecipe)
 routes.put('/recipe/:id', authMiddleware, UpdateRecipe)
 routes.patch('/recipe/favorite/:id', authMiddleware, updateFavorite)
 routes.delete('/recipe', authMiddleware, DeleteRecipe)
-routes.get('/batata', (req, res) => res.json({ok:true}))
 
 export {routes as RecipeRoute}
