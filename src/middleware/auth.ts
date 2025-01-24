@@ -7,16 +7,18 @@ type RequestWithUser = Request & {
 };
 
 export const authMiddleware = async (req: RequestWithUser, res: Response, next: NextFunction): Promise<any> => {
-  const token = req.headers["authorization"];
-
+  const token = req.headers.authorization?.replace('Bearer ', '')
+  const splitToken = token?.split('')
+  console.log(token)
   if (!token) {
     return res.status(401).json({ error: "O token não foi fornecido" });
   }
 
   try {
-    const decoded = jwt.verify(token, SECRET_KEY);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    console.log(decoded)
     req.user = decoded;
-    next();
+    return next();
   } catch (error) {
     return res.status(401).json({
       error: "Erro ao verificar token",

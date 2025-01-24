@@ -23,10 +23,8 @@ export const LoginUser = async (req: Request, res: Response): Promise<any> => {
     const token = jwt.sign(
       {
         id: user.id,
-        name: user.name,
-        email: user.email,
       },
-      process.env.SECRET_KEY
+      process.env.JWT_SECRET
     );
 
     return res.json({token: token});
@@ -146,7 +144,7 @@ export const UpdateUser = async (req: Request, res: Response): Promise<any> => {
 
 export const DeleteUser = async (req: Request, res: Response): Promise<any> => {
   try {
-    const {id} = req.params
+    const {id} = req.user
 
     const userCheck = await prisma.user.findUnique({where: {id}})
     if(!userCheck) {

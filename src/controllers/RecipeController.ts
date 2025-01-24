@@ -23,7 +23,7 @@ export const CreateRecipe = async (req: Request, res: Response): Promise<any> =>
           title, 
           description, 
           ingredients, 
-          preparation_time, 
+          preparation_time: Number(preparation_time), 
           difficulty, 
           category, 
           imagem_url, 
