@@ -42,7 +42,7 @@ export const LoginUser = async (req: RequestWithUser, res: Response): Promise<an
   } catch (error) {
     return res.status(401).json({
       error: "Falha de autenticação", 
-      success: false
+      success: false,
     })
   }
 }
