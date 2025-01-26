@@ -127,21 +127,9 @@ export const updateFavorite = async (req: RequestWithUser, res: Response): Promi
   const recipeCheck = await prisma.recipe.findUnique({where: {id}})
   if(!recipeCheck) return res.status(404).json({ error: 'Receita não encontrada'})
 
-  const oldFavorite = await prisma.recipe.findUnique({
-    where: {id},
-    select: {favorite: true}
-  })
-
-  let newStatus;
-  if(oldFavorite?.favorite === false){
-    newStatus = true
-  } else {
-    newStatus = false
-  }
-
   const updateFavorite = await prisma.recipe.update({
     where: {id},
-    data: {favorite: newStatus}
+    data: {favorite: recipeCheck.favorite === false ? true : false}
   })
 
   return res.status(200).json(updateFavorite)
