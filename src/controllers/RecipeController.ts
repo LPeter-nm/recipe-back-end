@@ -54,6 +54,7 @@ export const IndexRecipe = async (req: RequestWithUser, res: Response): Promise<
         description: true, 
         ingredients: true, 
         preparation_time: true, 
+        favorite: true,
         difficulty: true, 
         category: true, 
         imagem_url: true, 
