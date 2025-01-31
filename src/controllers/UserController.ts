@@ -57,7 +57,7 @@ export const CreateUser = async (req: RequestWithUser, res: Response): Promise<a
     } else {
       const randomSalt = randomInt(10, 16);
       const hash = await bcrypt.hash(password, randomSalt)
-      const user = await prisma.user.create({
+      await prisma.user.create({
         data: {
           name,
           email,
@@ -71,27 +71,6 @@ export const CreateUser = async (req: RequestWithUser, res: Response): Promise<a
     return res.status(400).json({
       error: "Erro ao cadastrar usuário", 
       message: error
-    })
-  }
-}
-
-export const IndexUser = async (req: RequestWithUser, res: Response): Promise<any> => {
-  try {
-    const users = await prisma.user.findMany({
-      select:{
-        id: true,
-        email: true,
-        name: true,
-        recipe: true,
-      }
-    })
-
-    return res.status(200).json(users)
-    
-  } catch (error) {
-    return res.status(400).json({
-      error: "Erro ao listar usuários", 
-      success: false
     })
   }
 }
@@ -115,59 +94,3 @@ export const ShowUser = async (req: RequestWithUser, res: Response): Promise<any
   }
 }
 
-export const UpdateUser = async (req: RequestWithUser, res: Response): Promise<any> => {
-  try {
-    const { id } = req.user as User;
-    const { name, email, password } = req.body;
-
-    const emailCheck = await prisma.user.findFirst({
-      where:{
-        email,
-      }
-    });
-    
-    if(emailCheck) {
-      return res.status(400).json({ message: "Email já cadastrado"})
-    }
-    
-    const randomSalt = randomInt(10, 16);
-    const hash = await bcrypt.hash(password, randomSalt)
-    await prisma.user.update({
-      where:{
-        id,
-      },
-      data:{
-        name,
-        email,
-        password: hash,
-      }
-    })
-
-    return res.status(200).json({message: "Usuário atualizado!"})
-  } catch (error) {
-    return res.status(400).json({
-      error: "Erro ao Atualizar usuário", 
-      message: error
-    })
-  }
-}
-
-export const DeleteUser = async (req: RequestWithUser, res: Response): Promise<any> => {
-  try {
-    const { id } = req.user as User;
-
-    const userCheck = await prisma.user.findUnique({where: {id}})
-    if(!userCheck) {
-      return res.status(404).json({ error: "Usuário não encontrado"})
-    }
-
-    await prisma.user.delete({where: {id}})
-
-    return res.status(200).json({message: "Usuário deletado com sucesso"})
-  } catch (error) {
-    return res.status(400).json({
-      error: "Erro ao deletar usuário", 
-      message: error
-    })
-  }
-}
